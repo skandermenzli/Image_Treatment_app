@@ -20,6 +20,18 @@ class MyImage:
         return np.copy(filtreMoy(n,self.matrix,self.row,self.col))
 
 
+    def saltAndPepper(self):
+        return np.copy(createNoise(self.matrix,self.row,self.col))
+
+
+
+    def egaliseHist(self):
+        return np.copy(egaliseHist(self.matrix,self.row,self.col))
+
+    def linear_transform(self,x1,x2,y1,y2):
+        return np.copy(lineraTransform(x1,x2,y1,y2,self.matrix,self.row,self.col))
+
+
 
 
 

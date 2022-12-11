@@ -38,7 +38,7 @@ def read_file(filename:str):
         print(file.readline())
         tab = []
         for line in file:
-            tab.extend([int(c) for c in line.split()])
+            tab.extend([int(float(c)) for c in line.split()])
         matrix = np.reshape(tab, [int(nb_lig), int(nb_col)])
         print(matrix)
 
@@ -75,7 +75,7 @@ def openImage():
     matrix,format,nb_col, nb_row = read_file(filename)
     image = MyImage(matrix,int(nb_row),int(nb_col))
     original = MyImage(np.copy(matrix),int(nb_row),int(nb_col))
-    original.matrix[0][0] = 999
+    ##original.matrix[0][0] = 999
     #image.matrix = original.matrix
     #print(original.matrix)
     #print(image.matrix)
@@ -119,9 +119,9 @@ def saveImage():
     file.write(" nbre de colonne = ")
     file.write(str(image.col))
     file.write("\n")
-    file.write(str(image.row))
-    file.write(" ")
     file.write(str(image.col))
+    file.write(" ")
+    file.write(str(image.row))
     # file.write(x , " ", y )
     file.write("\n255")
     for i in range(image.row):
@@ -133,12 +133,12 @@ def restoreImage():
     image.matrix = np.copy(original.matrix)
     setImage(image.matrix)
 def egalise():
-    matrix_eg = egaliseHist(matrix,int(nb_row),int(nb_col))
-    setImage(matrix_eg)
+    image.matrix = image.egaliseHist()
+    setImage(image.matrix)
 
 def noise():
-    matrix_bruit = createNoise(matrix,int(nb_row),int(nb_col))
-    setImage(matrix_bruit)
+    image.matrix = image.saltAndPepper()
+    setImage(image.matrix)
 
 
 def applyMedian():
@@ -151,6 +151,39 @@ def applyMoy():
     n = int(e2.get())
     image.matrix = image.moyfilter(n)
     setImage(image.matrix)
+
+
+def openBox():
+    top = Toplevel(root,padx=6,pady=6)
+    top.geometry("300x150")
+    lx1 = Label(top,text="x1:" ,padx=6).grid(row=0,column=0)
+    xe1 = tk.Entry(top, width=6, font=('Arial 12'))
+    xe1.grid(row=0,column=1)
+    ly1 = Label(top, text="y1:" ,padx=6).grid(row=0, column=3)
+    ye1 = tk.Entry(top, width=6, font=('Arial 12'))
+    ye1.grid(row=0, column=4)
+    lx2 = Label(top, text="x2:" ,padx=6).grid(row=1, column=0)
+    xe2 = tk.Entry(top, width=6, font=('Arial 12'))
+    xe2.grid(row=1,column=1)
+    ly2 = Label(top, text="y2:", padx=6).grid(row=1, column=3)
+    ye2 = tk.Entry(top, width=6, font=('Arial 12'))
+    ye2.grid(row=1, column=4)
+
+
+    def transform():
+        x1 = int(xe1.get())
+        x2 = int(xe2.get())
+        y1 = int(ye1.get())
+        y2 = int(ye2.get())
+        image.matrix = image.linear_transform(x1,x2,y1,y2)
+        setImage(image.matrix)
+        top.destroy()
+
+
+    btn_trf = tk.Button(top, text="Transform", padx=10, pady=5, command=transform).grid(row=2, column=2)
+
+
+
 
 
 ## buttons
@@ -185,6 +218,9 @@ e2.grid(row=4,column=2)
 
 btn_moy = tk.Button(frameBtn2,text="Moeyenne filter",padx=10,pady=5,command=applyMoy)
 btn_moy.grid(row=4,column=3)
+
+btn_moy = tk.Button(frameBtn2,text="Linear transform",padx=10,pady=5,command=openBox)
+btn_moy.grid(row=5,column=3)
 
 
 

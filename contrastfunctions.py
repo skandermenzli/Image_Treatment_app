@@ -28,3 +28,29 @@ def egaliseHist(matrix,row,col):
 
     return matrix_hist
 
+def create_lut(x1,x2,y1,y2):
+    a1 = y1/x1
+    a2 = (y2-y1)/(x2-x1)
+    b2 = y2 - a2*x2
+    a3 = (255-y2)/(255-x2)
+    b3 = 255 - a3*255
+    lut = np.zeros(256)
+    for i in range(256):
+        if(i < x1):
+            lut[i] = i*a1
+        elif(x1<=i<x2):
+            lut[i] = i*a2 +b2
+        else:
+            lut[i] = i*a3 +b3
+    return lut
+
+def lineraTransform(x1,x2,y1,y2,matrix,row,col):
+    lut = create_lut(x1,x2,y1,y2)
+
+    matrix_t = np.zeros((row, col))
+
+    for i in range(row):
+        for j in range(col):
+            matrix_t[i, j] = math.floor(lut[matrix[i, j]])
+
+    return matrix_t

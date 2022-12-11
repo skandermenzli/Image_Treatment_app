@@ -46,8 +46,8 @@ def filtreMed(n, img, M, N):
 
 def createNoise(matrix,row,col):
     matrix_bruit = matrix
-    for i in range(240):
-        for j in range(320):
+    for i in range(row):
+        for j in range(col):
             x = random.randint(0, 20)
             if (x == 20):
                 matrix_bruit[i, j] = 255
