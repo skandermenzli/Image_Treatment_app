@@ -16,7 +16,7 @@ from image import MyImage
 root = Tk()
 
 root.title('image app')
-root.geometry("800x600")
+root.geometry("800x650")
 root.columnconfigure(0, weight=1)
 root.columnconfigure(1, weight=3)
 root.columnconfigure(2,weight=1)
@@ -24,22 +24,30 @@ frameBtn1 = LabelFrame(root, text="Buttons",)
 frameBtn1.grid(row=0, column=0,sticky=tk.NE)
 frameImg = LabelFrame(root, text="Image", padx=15, pady=15)
 frameImg.grid(row=0, column=1)
-frameBtn2 = LabelFrame(root, text="Buttons",)
+frameBtn2 = LabelFrame(root, text="Filters",)
 frameBtn2.grid(row=0, column=2,sticky=tk.NE)
 
 def read_file(filename:str):
 
+        color = False
         file = open(str(filename), "r")
         format = file.readline()
-        print(file.readline())
-
+        info = file.readline()
+        if(info.find(".PPM")!=-1):
+            color = True
+        print("color:",str(color))
         taille = file.readline()
         nb_col, nb_lig = taille.split(' ', 2)
         print(file.readline())
         tab = []
+
         for line in file:
             tab.extend([int(float(c)) for c in line.split()])
-        matrix = np.reshape(tab, [int(nb_lig), int(nb_col)])
+
+        if(color):
+            matrix = np.reshape(tab, [int(nb_lig), int(nb_col),3])
+        else:
+            matrix = np.reshape(tab, [int(nb_lig), int(nb_col)])
         print(matrix)
 
 
@@ -53,11 +61,18 @@ def read_file(filename:str):
 
 def setImage(matrix):
     global img
-    img = ImageTk.PhotoImage(image=Image.fromarray(matrix))
+    #img = ImageTk.PhotoImage(image=Image.fromarray(matrix,"RGB"))
+    img = plt.imshow(matrix, cmap='gray')
+    fig = Figure(figsize=(4, 4), dpi=100)
+    plot = fig.add_subplot()
+    plot.imshow(matrix, cmap='gray')
 
-    canvas = Canvas(frameImg)
-    canvas.grid(row=0, column=0)
-    canvas.create_image(20, 20, anchor=NW, image=img)
+    canvas =  FigureCanvasTkAgg(fig,master=frameImg)
+    canvas.draw()
+    canvas.get_tk_widget().grid(row=0, column=0)
+    #canvas.grid(row=0, column=0)
+    #canvas.create_image(20, 20, anchor=NW, image=img)
+    
 
     label_mean = Label(frameImg, text="Mean : " + str(matrix.mean()))
     label_var = Label(frameImg, text="Variance : " + str(matrix.var()))
@@ -75,12 +90,8 @@ def openImage():
     matrix,format,nb_col, nb_row = read_file(filename)
     image = MyImage(matrix,int(nb_row),int(nb_col))
     original = MyImage(np.copy(matrix),int(nb_row),int(nb_col))
-    ##original.matrix[0][0] = 999
-    #image.matrix = original.matrix
-    #print(original.matrix)
-    #print(image.matrix)
 
-    setImage(matrix)
+    setImage(image.matrix)
 
     format_label = Label(frameImg,text="image foramt : "+format )
     label_col = Label(frameImg,text="Number of Columns : "+nb_col )
@@ -89,6 +100,16 @@ def openImage():
     format_label.grid(row=2,column=0)
     label_row.grid(row=3,column=0)
     label_col.grid(row=4, column=0)
+
+    btn_linear.config(state="normal")
+    btn_egalisehist.config(state="normal")
+    btn_noise.config(state="normal")
+    saveFile.config(state="normal")
+    restoreFile.config(state="normal")
+    btn_ceiling.config(state="normal")
+    btn_ceiling_or.config(state="normal")
+
+
 
 
     def hist():
@@ -129,6 +150,10 @@ def saveImage():
         for j in range(image.col):
             file.write(str(image.matrix[i][j]))
             file.write(" ")
+
+    top = Toplevel(root)
+    top.geometry("150x60")
+    label = Label(top,text="Image saved!!" ,padx=6).pack()
 def restoreImage():
     image.matrix = np.copy(original.matrix)
     setImage(image.matrix)
@@ -183,6 +208,34 @@ def openBox():
     btn_trf = tk.Button(top, text="Transform", padx=10, pady=5, command=transform).grid(row=2, column=2)
 
 
+def ceil():
+    top = Toplevel(root, padx=6, pady=6)
+    top.geometry("350x100")
+    c1_l = Label(top, text="ceil1:", padx=6).grid(row=0, column=0)
+    ce1 = tk.Entry(top, width=6, font=('Arial 12'))
+    ce1.grid(row=0, column=1)
+    c2_l = Label(top, text="ceil2:", padx=6).grid(row=0, column=2)
+    ce2 = tk.Entry(top, width=6, font=('Arial 12'))
+    ce2.grid(row=0, column=3)
+    c3_l = Label(top, text="ceil3:", padx=6).grid(row=0, column=4)
+    ce3 = tk.Entry(top, width=6, font=('Arial 12'))
+    ce3.grid(row=0, column=5)
+
+    def applyCeil():
+        c1 = int(ce1.get())
+        c2 = int(ce2.get())
+        c3 = int(ce3.get())
+        image.matrix = image.seuilManuel([c1,c2,c3])
+        setImage(image.matrix)
+        top.destroy()
+
+    btn_apply = tk.Button(top, text="Apply", padx=10, pady=5, command=applyCeil).grid(row=2, column=2,sticky=tk.S)
+
+
+def applyOr():
+    image.matrix = image.seuilOr()
+    setImage(image.matrix)
+
 
 
 
@@ -191,19 +244,19 @@ def openBox():
 openFile= tk.Button(frameBtn1,text="Open Image",padx=10,pady=5,command=openImage)
 openFile.grid(row=0,column=0,sticky=tk.W)
 
-saveFile = tk.Button(frameBtn1,text="Save Image",padx=10,pady=5,command=saveImage)
+saveFile = tk.Button(frameBtn1,text="Save Image",padx=10,pady=5,command=saveImage,state= DISABLED)
 saveFile.grid(row=1,column=0,sticky=tk.W)
 
-restoreFile = tk.Button(frameBtn1,text="Restore Image",padx=10,pady=5,command=restoreImage)
+restoreFile = tk.Button(frameBtn1,text="Restore Image",padx=10,pady=5,command=restoreImage,state= DISABLED)
 restoreFile.grid(row=2,column=0,sticky=tk.W)
 
 
 
 
 
-btn_egalisehist= tk.Button(frameBtn2,text="Egalisation Hist",padx=10,pady=5,command=egalise)
+btn_egalisehist= tk.Button(frameBtn2,text="Egalisation Hist",padx=10,pady=5,command=egalise,state= DISABLED)
 btn_egalisehist.grid(row=1,column=3,sticky=tk.E)
-btn_noise= tk.Button(frameBtn2,text="Add noise",padx=10,pady=5,command=noise)
+btn_noise= tk.Button(frameBtn2,text="Add noise",padx=10,pady=5,command=noise,state= DISABLED)
 btn_noise.grid(row=2,column=3,sticky=tk.E)
 img = ImageTk.PhotoImage(image=Image.open("images/placeholder.png").resize((300,222)))
 
@@ -219,8 +272,14 @@ e2.grid(row=4,column=2)
 btn_moy = tk.Button(frameBtn2,text="Moeyenne filter",padx=10,pady=5,command=applyMoy)
 btn_moy.grid(row=4,column=3)
 
-btn_moy = tk.Button(frameBtn2,text="Linear transform",padx=10,pady=5,command=openBox)
-btn_moy.grid(row=5,column=3)
+btn_linear = tk.Button(frameBtn2,text="Linear transform",padx=10,pady=5,command=openBox,state= DISABLED)
+btn_linear.grid(row=5,column=3)
+
+btn_ceiling = tk.Button(frameBtn2,text="Manuel ceil",padx=10,pady=5,command=ceil,state= DISABLED)
+btn_ceiling.grid(row=6,column=3)
+
+btn_ceiling_or = tk.Button(frameBtn2,text="Or ceil",padx=10,pady=5,command=applyOr,state= DISABLED)
+btn_ceiling_or.grid(row=7,column=3)
 
 
 

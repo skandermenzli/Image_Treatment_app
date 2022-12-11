@@ -55,3 +55,29 @@ def createNoise(matrix,row,col):
                 matrix_bruit[i, j] = 0
 
     return matrix_bruit
+
+
+def seuilManuel(img,seuils):
+    x,y,z =img.shape
+    img_seuil = img
+    for i in range(x):
+        for j in range(y):
+            for k in range(z):
+                if(img[i][j][k]<seuils[k]):
+                    img_seuil[i][j][k] = 0
+                else:
+                    img_seuil[i][j][k] = 255
+    return img_seuil
+
+
+def seuilManuelOu(img):
+    x,y,z =img.shape
+    img_seuil = img
+    for i in range(x):
+        for j in range(y):
+                for k in range(z):
+                    if(img[i][j][k]==255):
+                        img_seuil[i][j] = np.array([255,255,255])
+                        break
+    return img_seuil
+

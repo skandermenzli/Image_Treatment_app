@@ -31,6 +31,12 @@ class MyImage:
     def linear_transform(self,x1,x2,y1,y2):
         return np.copy(lineraTransform(x1,x2,y1,y2,self.matrix,self.row,self.col))
 
+    def seuilManuel(self,seuils):
+        return np.copy(seuilManuel(self.matrix,seuils))
+
+    def seuilOr(self):
+        return np.copy(seuilManuelOu(self.matrix))
+
 
 
 
