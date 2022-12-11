@@ -111,6 +111,7 @@ def openImage():
     btn_ceiling.config(state="normal")
     btn_ceiling_or.config(state="normal")
     btn_ceiling_and.config(state="normal")
+    btn_ostu.config(state="normal")
 
 
 
@@ -244,6 +245,11 @@ def applyAnd():
     setImage(image.matrix)
 
 
+def applyOtsu():
+    image.matrix = image.otsu()
+    setImage(image.matrix)
+
+
 
 
 ## buttons
@@ -290,6 +296,9 @@ btn_ceiling_or.grid(row=7,column=3,sticky=tk.E)
 
 btn_ceiling_and = tk.Button(frameBtn2,text="And ceil",padx=10,pady=5,command=applyAnd,state= DISABLED)
 btn_ceiling_and.grid(row=8,column=3,sticky=tk.E)
+
+btn_ostu = tk.Button(frameBtn2,text="Otsu",padx=10,pady=5,command=applyOtsu,state= DISABLED)
+btn_ostu.grid(row=9,column=3,sticky=tk.E)
 
 
 

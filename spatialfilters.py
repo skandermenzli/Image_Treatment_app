@@ -134,3 +134,17 @@ def threshold_otsu_impl(image, nbins=0.1):
         print("trace:", within_class_variance, color_threshold)
 
     return least_variance_threshold
+
+def ostuBinary(matrix,row,col):
+    threshold = threshold_otsu_impl(matrix)
+    print("this is the threshold: ",threshold)
+    for i in range(row):
+        for j in range(col):
+            if(matrix[i,j]>threshold):
+                #foreground
+                matrix[i,j] = 0
+            else:
+                matrix[i, j] = 255
+
+    return matrix
+

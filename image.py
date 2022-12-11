@@ -41,6 +41,10 @@ class MyImage:
         return np.copy(seuilManuelEt(self.matrix))
 
 
+    def otsu(self):
+        return np.copy(ostuBinary(self.matrix,self.row,self.col))
+
+
 
 
 
