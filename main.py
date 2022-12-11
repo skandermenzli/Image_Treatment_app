@@ -103,6 +103,8 @@ def openImage():
 
     btn_linear.config(state="normal")
     btn_egalisehist.config(state="normal")
+    btn_median.config(state="normal")
+    btn_moy.config(state="normal")
     btn_noise.config(state="normal")
     saveFile.config(state="normal")
     restoreFile.config(state="normal")
@@ -268,26 +270,26 @@ img = ImageTk.PhotoImage(image=Image.open("images/placeholder.png").resize((300,
 e1 = tk.Entry(frameBtn2,width=4,font=('Arial 16'))
 e1.grid(row=3,column=2)
 
-btn_median = tk.Button(frameBtn2,text="Median filter",padx=10,pady=5,command=applyMedian)
-btn_median.grid(row=3,column=3)
+btn_median = tk.Button(frameBtn2,text="Median filter",padx=10,pady=5,command=applyMedian,state= DISABLED)
+btn_median.grid(row=3,column=3,sticky=tk.E)
 
 e2 = tk.Entry(frameBtn2,width=4,font=('Arial 16'))
 e2.grid(row=4,column=2)
 
-btn_moy = tk.Button(frameBtn2,text="Moeyenne filter",padx=10,pady=5,command=applyMoy)
-btn_moy.grid(row=4,column=3)
+btn_moy = tk.Button(frameBtn2,text="Moeyenne filter",padx=10,pady=5,command=applyMoy,state= DISABLED)
+btn_moy.grid(row=4,column=3,sticky=tk.E)
 
 btn_linear = tk.Button(frameBtn2,text="Linear transform",padx=10,pady=5,command=openBox,state= DISABLED)
 btn_linear.grid(row=5,column=3)
 
 btn_ceiling = tk.Button(frameBtn2,text="Manuel ceil",padx=10,pady=5,command=ceil,state= DISABLED)
-btn_ceiling.grid(row=6,column=3)
+btn_ceiling.grid(row=6,column=3,sticky=tk.E)
 
 btn_ceiling_or = tk.Button(frameBtn2,text="Or ceil",padx=10,pady=5,command=applyOr,state= DISABLED)
-btn_ceiling_or.grid(row=7,column=3)
+btn_ceiling_or.grid(row=7,column=3,sticky=tk.E)
 
 btn_ceiling_and = tk.Button(frameBtn2,text="And ceil",padx=10,pady=5,command=applyAnd,state= DISABLED)
-btn_ceiling_and.grid(row=7,column=3)
+btn_ceiling_and.grid(row=8,column=3,sticky=tk.E)
 
 
 

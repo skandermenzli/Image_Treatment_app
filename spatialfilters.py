@@ -96,3 +96,41 @@ def seuilManuelEt(img):
             if (l != 3):
                 img_seuil[i][j] = np.zeros(z)
     return img_seuil
+
+
+def threshold_otsu_impl(image, nbins=0.1):
+    # validate grayscale
+    if len(image.shape) == 1 or len(image.shape) > 2:
+        print("must be a grayscale image.")
+        return
+
+    # validate multicolored
+    if np.min(image) == np.max(image):
+        print("the image must have multiple colors")
+        return
+
+    all_colors = image.flatten()
+    total_weight = len(all_colors)
+    least_variance = -1
+    least_variance_threshold = -1
+
+    # create an array of all possible threshold values which we want to loop through
+    color_thresholds = np.arange(np.min(image) + nbins, np.max(image) - nbins, nbins)
+
+    # loop through the thresholds to find the one with the least within class variance
+    for color_threshold in color_thresholds:
+        bg_pixels = all_colors[all_colors < color_threshold]
+        weight_bg = len(bg_pixels) / total_weight
+        variance_bg = np.var(bg_pixels)
+
+        fg_pixels = all_colors[all_colors >= color_threshold]
+        weight_fg = len(fg_pixels) / total_weight
+        variance_fg = np.var(fg_pixels)
+
+        within_class_variance = weight_fg * variance_fg + weight_bg * variance_bg
+        if least_variance == -1 or least_variance > within_class_variance:
+            least_variance = within_class_variance
+            least_variance_threshold = color_threshold
+        print("trace:", within_class_variance, color_threshold)
+
+    return least_variance_threshold
