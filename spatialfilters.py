@@ -81,3 +81,18 @@ def seuilManuelOu(img):
                         break
     return img_seuil
 
+
+def seuilManuelEt(img):
+    x, y, z = img.shape
+
+    img_seuil = img
+    for i in range(x):
+        for j in range(y):
+            l = 0
+            for k in range(z):
+                if (img[i][j][k] == 255):
+                    l += 1
+
+            if (l != 3):
+                img_seuil[i][j] = np.zeros(z)
+    return img_seuil

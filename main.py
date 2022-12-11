@@ -108,6 +108,7 @@ def openImage():
     restoreFile.config(state="normal")
     btn_ceiling.config(state="normal")
     btn_ceiling_or.config(state="normal")
+    btn_ceiling_and.config(state="normal")
 
 
 
@@ -236,6 +237,10 @@ def applyOr():
     image.matrix = image.seuilOr()
     setImage(image.matrix)
 
+def applyAnd():
+    image.matrix = image.seuilAnd()
+    setImage(image.matrix)
+
 
 
 
@@ -280,6 +285,9 @@ btn_ceiling.grid(row=6,column=3)
 
 btn_ceiling_or = tk.Button(frameBtn2,text="Or ceil",padx=10,pady=5,command=applyOr,state= DISABLED)
 btn_ceiling_or.grid(row=7,column=3)
+
+btn_ceiling_and = tk.Button(frameBtn2,text="And ceil",padx=10,pady=5,command=applyAnd,state= DISABLED)
+btn_ceiling_and.grid(row=7,column=3)
 
 
 

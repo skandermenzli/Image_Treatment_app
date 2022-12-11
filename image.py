@@ -37,6 +37,9 @@ class MyImage:
     def seuilOr(self):
         return np.copy(seuilManuelOu(self.matrix))
 
+    def seuilAnd(self):
+        return np.copy(seuilManuelEt(self.matrix))
+
 
 
 
