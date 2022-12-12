@@ -104,7 +104,9 @@ def openImage():
     btn_linear.config(state="normal")
     btn_egalisehist.config(state="normal")
     btn_median.config(state="normal")
+    btn_median_cross.config(state="normal")
     btn_moy.config(state="normal")
+    btn_haut.config(state="normal")
     btn_noise.config(state="normal")
     saveFile.config(state="normal")
     restoreFile.config(state="normal")
@@ -158,6 +160,7 @@ def saveImage():
     top = Toplevel(root)
     top.geometry("150x60")
     label = Label(top,text="Image saved!!" ,padx=6).pack()
+    #btn_ok = btn
 def restoreImage():
     image.matrix = np.copy(original.matrix)
     setImage(image.matrix)
@@ -176,9 +179,19 @@ def applyMedian():
     setImage(image.matrix)
 
 
-def applyMoy():
+def applyCrossMedian():
     n = int(e2.get())
+    image.matrix = image.medianCrossfilter(n)
+    setImage(image.matrix)
+
+def applyMoy():
+    n = int(e3.get())
     image.matrix = image.moyfilter(n)
+    setImage(image.matrix)
+
+def applyHigh():
+    n = int(e4.get())
+    image.matrix = image.highfilter(n)
     setImage(image.matrix)
 
 
@@ -282,23 +295,35 @@ btn_median.grid(row=3,column=3,sticky=tk.E)
 e2 = tk.Entry(frameBtn2,width=4,font=('Arial 16'))
 e2.grid(row=4,column=2)
 
+btn_median_cross = tk.Button(frameBtn2,text="Median filter(cross)",padx=10,pady=5,command=applyCrossMedian,state= DISABLED)
+btn_median_cross.grid(row=4,column=3,sticky=tk.E)
+
+e3 = tk.Entry(frameBtn2,width=4,font=('Arial 16'))
+e3.grid(row=5,column=2)
+
 btn_moy = tk.Button(frameBtn2,text="Moeyenne filter",padx=10,pady=5,command=applyMoy,state= DISABLED)
-btn_moy.grid(row=4,column=3,sticky=tk.E)
+btn_moy.grid(row=5,column=3,sticky=tk.E)
+
+e4 = tk.Entry(frameBtn2,width=4,font=('Arial 16'))
+e4.grid(row=6,column=2)
+
+btn_haut = tk.Button(frameBtn2,text="High pass filter",padx=10,pady=5,command=applyHigh,state= DISABLED)
+btn_haut.grid(row=6,column=3,sticky=tk.E)
 
 btn_linear = tk.Button(frameBtn2,text="Linear transform",padx=10,pady=5,command=openBox,state= DISABLED)
-btn_linear.grid(row=5,column=3)
+btn_linear.grid(row=7,column=3)
 
 btn_ceiling = tk.Button(frameBtn2,text="Manuel ceil",padx=10,pady=5,command=ceil,state= DISABLED)
-btn_ceiling.grid(row=6,column=3,sticky=tk.E)
+btn_ceiling.grid(row=8,column=3,sticky=tk.E)
 
 btn_ceiling_or = tk.Button(frameBtn2,text="Or ceil",padx=10,pady=5,command=applyOr,state= DISABLED)
-btn_ceiling_or.grid(row=7,column=3,sticky=tk.E)
+btn_ceiling_or.grid(row=9,column=3,sticky=tk.E)
 
 btn_ceiling_and = tk.Button(frameBtn2,text="And ceil",padx=10,pady=5,command=applyAnd,state= DISABLED)
-btn_ceiling_and.grid(row=8,column=3,sticky=tk.E)
+btn_ceiling_and.grid(row=10,column=3,sticky=tk.E)
 
 btn_ostu = tk.Button(frameBtn2,text="Otsu",padx=10,pady=5,command=applyOtsu,state= DISABLED)
-btn_ostu.grid(row=9,column=3,sticky=tk.E)
+btn_ostu.grid(row=11,column=3,sticky=tk.E)
 
 
 

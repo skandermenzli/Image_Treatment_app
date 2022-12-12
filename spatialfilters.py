@@ -1,18 +1,16 @@
-
 import numpy as np
 import random
 
 
 ### filtre Moyenne
 
-def filtreMoy(n ,img ,M ,N):
-    mask = np.ones([n, n], dtype = int)
-    mask = mask / ( n *n)
+def filtreMoy(n, img, M, N):
+    mask = np.ones([n, n], dtype=int)
+    mask = mask / (n * n)
     img_new = img
-    n2 = int( n /2)
+    n2 = int(n / 2)
 
-
-    for i in range(1, M- n2):
+    for i in range(1, M - n2):
         for j in range(1, N - n2):
             temp = 0
             for k in range(-n2, n2 + 1):
@@ -22,8 +20,6 @@ def filtreMoy(n ,img ,M ,N):
             img_new[i, j] = temp
 
     return img_new
-
-
 
 
 ### filtre Median
@@ -44,7 +40,50 @@ def filtreMed(n, img, M, N):
     return img_new
 
 
-def createNoise(matrix,row,col):
+def filtreMedCross(n, img, M, N):
+    img_new = img
+    n2 = int(n / 2)
+    for i in range(1, M - n2):
+        for j in range(1, N - n2):
+            temp = []
+            for l in range(-n2, n2 + 1):
+                temp.append(img[i - l, j])
+            for k in range(-n2, n2 + 1):
+                temp.append(img[i, j - k])
+            temp.sort()
+            print(temp)
+            img_new[i, j] = temp[int((2*n-1) / 2)]
+    return img_new
+
+
+def filtreHaut(n, img, M, N):
+    if (n % 2 == 0):
+        return img
+    mask = np.ones([n, n], dtype=int)
+    mask = mask * -1
+    img_new = img
+    n2 = int(n / 2)
+    mask[n2][n2] = -1 * np.sum(mask)
+    print(mask)
+
+    for i in range(1, M - n2):
+        for j in range(1, N - n2):
+            temp = img[i][j] * (n ** 2 + 1)
+            for k in range(-n2, n2 + 1):
+                for l in range(-n2, n2 + 1):
+                    temp -= img[i - l, j - k]
+
+            if (temp < 0):
+                img_new[i, j] = 0
+            elif (temp > 255):
+                img_new[i, j] = 255
+            else:
+                img_new[i, j] = temp
+
+    return img_new
+
+
+def createNoise(matrix, row, col):
     matrix_bruit = matrix
     for i in range(row):
         for j in range(col):
@@ -57,13 +96,13 @@ def createNoise(matrix,row,col):
     return matrix_bruit
 
 
-def seuilManuel(img,seuils):
-    x,y,z =img.shape
+def seuilManuel(img, seuils):
+    x, y, z = img.shape
     img_seuil = img
     for i in range(x):
         for j in range(y):
             for k in range(z):
-                if(img[i][j][k]<seuils[k]):
+                if (img[i][j][k] < seuils[k]):
                     img_seuil[i][j][k] = 0
                 else:
                     img_seuil[i][j][k] = 255
@@ -71,14 +110,14 @@ def seuilManuel(img,seuils):
 
 
 def seuilManuelOu(img):
-    x,y,z =img.shape
+    x, y, z = img.shape
     img_seuil = img
     for i in range(x):
         for j in range(y):
-                for k in range(z):
-                    if(img[i][j][k]==255):
-                        img_seuil[i][j] = np.array([255,255,255])
-                        break
+            for k in range(z):
+                if (img[i][j][k] == 255):
+                    img_seuil[i][j] = np.array([255, 255, 255])
+                    break
     return img_seuil
 
 
@@ -135,16 +174,16 @@ def threshold_otsu_impl(image, nbins=0.1):
 
     return least_variance_threshold
 
-def ostuBinary(matrix,row,col):
+
+def ostuBinary(matrix, row, col):
     threshold = threshold_otsu_impl(matrix)
-    print("this is the threshold: ",threshold)
+    print("this is the threshold: ", threshold)
     for i in range(row):
         for j in range(col):
-            if(matrix[i,j]>threshold):
-                #foreground
-                matrix[i,j] = 0
+            if (matrix[i, j] > threshold):
+                # foreground
+                matrix[i, j] = 0
             else:
                 matrix[i, j] = 255
 
     return matrix
-

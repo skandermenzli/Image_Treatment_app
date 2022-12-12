@@ -14,10 +14,23 @@ class MyImage:
         return np.copy(filtreMed(n,self.matrix,self.row,self.col))
 
 
+    def medianCrossfilter(self,n):
+
+        return np.copy(filtreMedCross(n,self.matrix,self.row,self.col))
+
+
 
     def moyfilter(self,n):
 
         return np.copy(filtreMoy(n,self.matrix,self.row,self.col))
+
+    def highfilter(self,n):
+
+        return np.copy(filtreHaut(n,self.matrix,self.row,self.col))
+
+
+    def hautfilter(self,n):
+        return np.copy(filtreHaut(n,self.matrix,self.row,self.col))
 
 
     def saltAndPepper(self):
